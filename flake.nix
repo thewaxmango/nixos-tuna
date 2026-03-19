@@ -24,7 +24,6 @@
                                 ./home.nix
                                 catppuccin.homeModules.catppuccin
                                 lazyvim.homeManagerModules.default
-                                #sops-nix.nixosModules.sops
                             ];
                         };
 			            backupFileExtension = "backup";  

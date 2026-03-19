@@ -15,7 +15,7 @@
     x11.enable = true;
     package = pkgs.catppuccin-cursors.mochaLavender;
     name = "catppuccin-mocha-lavender-cursors";
-    size = 48;
+    size = 44;
   };
 
   home.packages = with pkgs; [
@@ -24,27 +24,38 @@
 
   home.sessionVariables = {
     GTK_THEME = "catppuccin-mocha-lavender-standard";
+    QT_AUTO_SCREEN_SCALE_FACTOR = "0";
+    QT_SCREEN_SCALE_FACTORS = "1;1";
+    QT_SCALE_FACTOR = "1";
   };
 
   xresources.properties = {
     "Xft.dpi" = 192;
-    "Xcursor.size" = 48;
+    "Xcursor.size" = 44;
   };
 
   xsession.initExtra = ''
-    ${pkgs.xorg.xrandr}/bin/xrandr --dpi 192
-    if ${pkgs.xorg.xrandr}/bin/xrandr | grep -q "HDMI-0 connected"; then
-      ${pkgs.xorg.xrandr}/bin/xrandr --output HDMI-0 --auto --right-of DP-4
+    ${pkgs.xrandr}/bin/xrandr --dpi 192
+    if ${pkgs.xrandr}/bin/xrandr | grep -q "HDMI-0 connected"; then
+      ${pkgs.xrandr}/bin/xrandr --output HDMI-0 --auto --right-of DP-4
     fi
   '';
 
-  xsession.windowManager.i3 = {
+  xsession.windowManager.i3 = let
+    laptop = "DP-4";
+    laptopRes = "2560x1600";
+    laptopHz = "165.00";
+
+    external = "HDMI-0";
+    externalRes = "1920x1080";
+    externalHz = "60.00";
+  in {
     enable = true;
 
     config = {
       terminal = "kitty";
       modifier = "Mod4";
-      bars = [ ];
+      bars = [];
 
       gaps = {
         inner = 10;
@@ -95,7 +106,20 @@
 
       startup = [
         {
-          command = "${pkgs.feh}/bin/feh --bg-fill ${./assets/wallpapers}/sample.jpg";
+          command = ''
+            ${pkgs.writeShellScript "monitor-setup" ''
+              if ${pkgs.xrandr}/bin/xrandr | ${pkgs.gnugrep}/bin/grep "${external} connected"; then
+                ${pkgs.xrandr}/bin/xrandr \
+                  --output ${laptop} --primary --mode ${laptopRes} --rate ${laptopHz} \
+                  --output ${external} --mode ${externalRes} --rate ${externalHz} --right-of ${laptop} --scale 1.5x1.5
+              else
+                ${pkgs.xrandr}/bin/xrandr \
+                  --output ${laptop} --primary --mode ${laptopRes} --rate ${laptopHz} \
+                  --output ${external} --off
+              fi
+              ${pkgs.feh}/bin/feh --bg-fill ${./assets/wallpapers}/sample.jpg
+            ''}
+          '';
           always = true;
           notification = false;
         }
@@ -110,11 +134,24 @@
         }
         {
           command = "${pkgs.xss-lock}/bin/xss-lock -- betterlockscreen -l dim";
+          always = true;
           notification = false;
         }
       ];
 
       workspaceAutoBackAndForth = true;
+      workspaceOutputAssign = [
+      { workspace = "1"; output = laptop; }
+      { workspace = "2"; output = laptop; }
+      { workspace = "3"; output = laptop; }
+      { workspace = "4"; output = laptop; }
+      { workspace = "5"; output = laptop; }
+      { workspace = "6"; output = external; }
+      { workspace = "7"; output = external; }
+      { workspace = "8"; output = external; }
+      { workspace = "9"; output = external; }
+      { workspace = "10"; output = external; }
+    ];
 
       keybindings =
         let
@@ -176,6 +213,9 @@
           "${mod}+9" = "workspace ${ws9}";
           "${mod}+0" = "workspace ${ws10}";
 
+          "${mod}+Tab" = "workspace next";
+          "${mod}+Shift+Tab" = "workspace prev";
+
           "${mod}+Shift+1" = "move container to workspace ${ws1}";
           "${mod}+Shift+2" = "move container to workspace ${ws2}";
           "${mod}+Shift+3" = "move container to workspace ${ws3}";
@@ -196,6 +236,22 @@
           "${mod}+e" = "layout toggle split";
           "${mod}+Shift+space" = "floating toggle";
           "${mod}+space" = "focus mode_toggle";
+          "${mod}+a" = "focus parent";
+          
+
+          "${mod}+Shift+s" = ''exec ${pkgs.writeShellScript "clipSelection" ''
+            exec ${pkgs.maim}/bin/maim -s -c 0.8,0.6,1,0.5 \
+              | ${pkgs.xclip}/bin/xclip -selection clipboard -t image/png
+          ''}'';
+          "Print" = ''exec ${pkgs.writeShellScript "printEntireScreen" 
+            "exec ${pkgs.maim}/bin/maim ${config.home.homeDirectory}/Pictures/$(${pkgs.coreutils}/bin/date +%Y-%m-%d_%H-%M-%S).png"
+          }'';
+          "Shift+Print" = ''exec ${pkgs.writeShellScript "clipScreen"
+            "exec ${pkgs.maim}/bin/maim -i $(${pkgs.xdotool}/bin/xdotool getactivewindow) | ${pkgs.xclip}/bin/xclip -selection clipboard -t image/png"
+          }'';
+          "Control+Print" = ''exec ${pkgs.writeShellScript "printScreen"
+            "exec ${pkgs.maim}/bin/maim -i $(${pkgs.xdotool}/bin/xdotool getactivewindow) ${config.home.homeDirectory}/Pictures/$(${pkgs.coreutils}/bin/date +%Y-%m-%d_%H-%M-%S).png"
+          }'';
         };
 
       modes.resize = {
@@ -227,7 +283,7 @@
     };
     Service = {
       Type = "oneshot";
-      ExecStart = "${pkgs.betterlockscreen}/bin/betterlockscreen -u ./assets/wallpapers/sample.jpg";
+      ExecStart = "${pkgs.betterlockscreen}/bin/betterlockscreen -u ${./assets/wallpapers}/sample.jpg";
       RemainAfterExit = true;
     };
     Install = {
@@ -242,7 +298,12 @@
       alsaSupport = true;
       pulseSupport = true;
     };
-    script = "polybar main &";
+
+    script = ''
+      for m in $(${pkgs.xrandr}/bin/xrandr --query | ${pkgs.gnugrep}/bin/grep " connected" | ${pkgs.coreutils}/bin/cut -d" " -f1); do
+        MONITOR=$m polybar main &
+      done
+    '';
 
     config = {
       "colors" = {
@@ -581,11 +642,20 @@
 
   programs.vscode = {
     enable = true;
-    userSettings = {
+    profiles.default.userSettings = {
       "editor.fontFamily" = "'JetBrainsMono Nerd Font', 'monospace', monospace";
       "editor.fontLigatures" = true;
       "editor.fontSize" = 14;
       "terminal.integrated.fontFamily" = "JetBrainsMono Nerd Font";
+      "vim.useSystemClipboard" = true;
+      "vim.hlsearch" = true;
+      "vim.easymotion" = true;
+      "vim.incsearch" = true;
+      
+      "vim.cursorStylePerMode.insert" = "line";
+      "vim.cursorStylePerMode.normal" = "block";
+      
+      "vim.leader" = "<space>";
     };
   };
 }

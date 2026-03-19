@@ -50,6 +50,14 @@
     };
   };
 
+  security.rtkit.enable = true;
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+  };
+
   services.openssh.enable = true;
   programs.ssh.startAgent = true;
 
@@ -63,12 +71,16 @@
     desktopManager = {
       xterm.enable = false;
     };
+
+    displayManager = {
+      lightdm.enable = false;
+    };
     
     windowManager.i3 = {
       enable = true;
       extraPackages = with pkgs; [
         dmenu
-	polybar
+	      polybar
         i3lock
       ];
     };
@@ -82,7 +94,11 @@
   programs.i3lock.enable = true;
   programs.fish.enable = true;
 
-  services.displayManager.defaultSession = "none+i3";
+  services.displayManager = {
+    defaultSession = "none+i3";
+    gdm.enable = true;
+  };
+
   services.udisks2.enable = true;
   services.gvfs.enable = true;
 
@@ -137,12 +153,16 @@
         jnoortheen.nix-ide
         ms-python.python
         james-yu.latex-workshop
+        vscodevim.vim
       ];
     })
     (pkgs.texlive.combine {
       inherit (pkgs.texlive) scheme-medium;
     })
     rofi
+    maim
+    scrot
+    xclip
   ];
 
   fonts = {
