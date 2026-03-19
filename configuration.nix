@@ -6,12 +6,6 @@
       ./hardware-configuration.nix
     ];
 
-  # boot.kernelModules = [ "nvidia_wmi_ec_backlight" ];
-  # boot.kernelParams = [
-  #   "acpi_backlight=nvidia_wmi_ec"
-  #   "nvidia.NVreg_RegistryDwords=EnableBrightnessControl=1"
-  # ];
-
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.supportedFilesystems = [ "ntfs" ];
@@ -32,6 +26,28 @@
     LC_PAPER = "en_US.UTF-8";
     LC_TELEPHONE = "en_US.UTF-8";
     LC_TIME = "en_US.UTF-8";
+  };
+
+  security.pam.services.betterlockscreen = {};
+  services.logind = {
+    settings = {
+      Login = {
+        HandleLidSwitch = "suspend";
+        LidSwitchIgnoreInhibited = "no";
+      };
+    };
+  };
+
+  systemd.services.betterlockscreen-pause = {
+    description = "Lock screen before sleep";
+    before = [ "sleep.target" "suspend.target" ];
+    wantedBy = [ "sleep.target" "suspend.target" ];
+    serviceConfig = {
+      Type = "simple";
+      ExecStart = "${pkgs.betterlockscreen}/bin/betterlockscreen -l dim";
+      User = "twm";
+      Environment = "DISPLAY:=0";
+    };
   };
 
   services.openssh.enable = true;
@@ -67,7 +83,6 @@
   programs.fish.enable = true;
 
   services.displayManager.defaultSession = "none+i3";
-
   services.udisks2.enable = true;
   services.gvfs.enable = true;
 
@@ -88,7 +103,7 @@
 
   hardware.nvidia = {
     modesetting.enable = true;
-    powerManagement.enable = false;
+    powerManagement.enable = true;
     powerManagement.finegrained = false;
     open = true;
     nvidiaSettings = true;
@@ -116,11 +131,35 @@
     thunar
     thunar-volman
     ntfs3g
+    (pkgs.vscode-with-extensions.override {
+      vscode = pkgs.vscodium;
+      vscodeExtensions = with pkgs.vscode-extensions; [
+        jnoortheen.nix-ide
+        ms-python.python
+        james-yu.latex-workshop
+      ];
+    })
+    (pkgs.texlive.combine {
+      inherit (pkgs.texlive) scheme-medium;
+    })
+    rofi
   ];
 
-  fonts.packages = with pkgs; [
-    nerd-fonts.jetbrains-mono
-  ];
+  fonts = {
+    packages = with pkgs; [
+      nerd-fonts.jetbrains-mono
+      noto-fonts
+      noto-fonts-color-emoji
+    ];
+    fontconfig = {
+      enable = true;
+      defaultFonts = {
+        monospace = [ "JetBrainsMono Nerd Font" ];
+        sansSerif = [ "Noto Sans" ];
+        serif = [ "Noto Serif" ];
+      };
+    };
+  };
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 

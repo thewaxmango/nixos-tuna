@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 {
   home.username = "twm";
@@ -39,144 +44,159 @@
     config = {
       terminal = "kitty";
       modifier = "Mod4";
-      bars = [];
-      
+      bars = [ ];
+
       gaps = {
         inner = 10;
-	outer = 0;
+        outer = 0;
       };
 
       window = {
         border = 0;
-	titlebar = false;
+        titlebar = false;
 
-	commands = [
+        commands = [
           {
-	    command = "floating enable, resize set 1200 900, move position center";
-	    criteria = { class = "Xdg-desktop-portal-gtk"; };
-	  }
+            command = "floating enable, resize set 1200 900, move position center";
+            criteria = {
+              class = "Xdg-desktop-portal-gtk";
+            };
+          }
           {
-	    command = "floating enable, resize set 1200 900, move position center";
-	    criteria = { window_role = "GtkFileChooserDialog"; };
-	  }
-	  {
-	    command = "floating enable, resize set 1200 900, move position center";
-	    criteria = { title = "Open File"; };
-	  }
-	  {
-	    command = "floating enable, resize set 1200 900, move position center";
-	    criteria = { title = "Save File"; };
-	  }
-	];
+            command = "floating enable, resize set 1200 900, move position center";
+            criteria = {
+              window_role = "GtkFileChooserDialog";
+            };
+          }
+          {
+            command = "floating enable, resize set 1200 900, move position center";
+            criteria = {
+              title = "Open File";
+            };
+          }
+          {
+            command = "floating enable, resize set 1200 900, move position center";
+            criteria = {
+              title = "Save File";
+            };
+          }
+        ];
       };
 
       floating = {
-      	border = 0;
-	titlebar = false;
+        border = 0;
+        titlebar = false;
       };
-      
+
       fonts = {
         names = [ "JetBrainsMono Nerd Font" ];
-	size = 12.0;
+        size = 12.0;
       };
 
       startup = [
         {
-	  command = "${pkgs.feh}/bin/feh --bg-fill ${./assets/wallpapers}/sample.jpg";
-	  always = true;
-	  notification = false;
-	}
+          command = "${pkgs.feh}/bin/feh --bg-fill ${./assets/wallpapers}/sample.jpg";
+          always = true;
+          notification = false;
+        }
         {
-	  command = "systemctl --user restart polybar"; 
-	  always = true; 
-	  notification = false;
-	}
+          command = "systemctl --user restart polybar";
+          always = true;
+          notification = false;
+        }
+        {
+          command = "xset s 300 600";
+          notification = false;
+        }
+        {
+          command = "${pkgs.xss-lock}/bin/xss-lock -- betterlockscreen -l dim";
+          notification = false;
+        }
       ];
 
       workspaceAutoBackAndForth = true;
 
-      keybindings = let
-        mod = "Mod4";
-	ws1 = "1";
-	ws2 = "2";
-	ws3 = "3";
-	ws4 = "4";
-	ws5 = "5";
-	ws6 = "6";
-	ws7 = "7";
-	ws8 = "8";
-	ws9 = "9";
-	ws10 = "10";
-      in {
-        "${mod}+Return" = "exec ${pkgs.kitty}/bin/kitty";
-        "${mod}+Shift+c" = "reload";
-	"${mod}+Shift+r" = "restart";
-	"${mod}+d" = "exec dmenu_run";
-	"${mod}+b" = "exec librewolf";
-        "${mod}+q" = "kill";
+      keybindings =
+        let
+          mod = "Mod4";
+          ws1 = "1";
+          ws2 = "2";
+          ws3 = "3";
+          ws4 = "4";
+          ws5 = "5";
+          ws6 = "6";
+          ws7 = "7";
+          ws8 = "8";
+          ws9 = "9";
+          ws10 = "10";
+        in
+        {
+          "${mod}+Return" = "exec ${pkgs.kitty}/bin/kitty";
+          "${mod}+Shift+c" = "reload";
+          "${mod}+Shift+r" = "restart";
+          "${mod}+d" = "exec rofi -show run";    
+          "${mod}+b" = "exec librewolf";
+          "${mod}+q" = "kill";
 
-        "${mod}+F5" = "exec ${pkgs.brightnessctl}/bin/brightnessctl set 5%-";
-	"${mod}+F6" = "exec ${pkgs.brightnessctl}/bin/brightnessctl set 5%+";
-        "XF86MonBrightnessUp" = "exec ${pkgs.brightnessctl}/bin/brightnessctl set 5%+";
-        "XF86MonBrightnessDown" = "exec ${pkgs.brightnessctl}/bin/brightnessctl set 5%-";
-      
-        "${mod}+F1" = "exec ${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle";
-        "${mod}+F3" = "exec ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ +5%";
-        "${mod}+F2" = "exec ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ -5%";
-        "XF86AudioMute" = "exec ${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle";
-        "XF86AudioRaiseVolume" = "exec ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ +5%";
-        "XF86AudioLowerVolume" = "exec ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ -5%";
-      
-        "${mod}+j" = "focus left";
-        "${mod}+k" = "focus up";
-        "${mod}+l" = "focus down";
-        "${mod}+semicolon" = "focus right";
-        "${mod}+Left" = "focus left";
-        "${mod}+Down" = "focus down";
-        "${mod}+Up" = "focus up";
-        "${mod}+Right" = "focus right";
+          "${mod}+l" = "exec --no-startup-id betterlockscreen -l dim";
+          "${mod}+Shift+l" = "exec i3-msg exit";
+          "${mod}+Escape" = "exec --no-startup-id systemctl reboot";
+          "${mod}+Shift+Escape" = "exec --no-startup-id systemctl poweroff";
 
-        "${mod}+Shift+j" = "move left";
-        "${mod}+Shift+k" = "move up";
-        "${mod}+Shift+l" = "move down";
-        "${mod}+Shift+semicolon" = "move right";
-        "${mod}+Shift+Left" = "move left";
-        "${mod}+Shift+Down" = "move down";
-        "${mod}+Shift+Up" = "move up";
-        "${mod}+Shift+Right" = "move right";
+          "${mod}+F5" = "exec ${pkgs.brightnessctl}/bin/brightnessctl set 5%-";
+          "${mod}+F6" = "exec ${pkgs.brightnessctl}/bin/brightnessctl set 5%+";
+          "XF86MonBrightnessUp" = "exec ${pkgs.brightnessctl}/bin/brightnessctl set 5%+";
+          "XF86MonBrightnessDown" = "exec ${pkgs.brightnessctl}/bin/brightnessctl set 5%-";
 
-	"${mod}+1" = "workspace ${ws1}";
-	"${mod}+2" = "workspace ${ws2}";
-	"${mod}+3" = "workspace ${ws3}";
-	"${mod}+4" = "workspace ${ws4}";
-	"${mod}+5" = "workspace ${ws5}";
-	"${mod}+6" = "workspace ${ws6}";
-	"${mod}+7" = "workspace ${ws7}";
-	"${mod}+8" = "workspace ${ws8}";
-	"${mod}+9" = "workspace ${ws9}";
-	"${mod}+0" = "workspace ${ws10}";
-      
-	"${mod}+Shift+1" = "move container to workspace ${ws1}";
-	"${mod}+Shift+2" = "move container to workspace ${ws2}";
-	"${mod}+Shift+3" = "move container to workspace ${ws3}";
-	"${mod}+Shift+4" = "move container to workspace ${ws4}";
-	"${mod}+Shift+5" = "move container to workspace ${ws5}";
-	"${mod}+Shift+6" = "move container to workspace ${ws6}";
-	"${mod}+Shift+7" = "move container to workspace ${ws7}";
-	"${mod}+Shift+8" = "move container to workspace ${ws8}";
-	"${mod}+Shift+9" = "move container to workspace ${ws9}";
-	"${mod}+Shift+0" = "move container to workspace ${ws10}";
+          "${mod}+F1" = "exec ${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle";
+          "${mod}+F3" = "exec ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ +5%";
+          "${mod}+F2" = "exec ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ -5%";
+          "XF86AudioMute" = "exec ${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle";
+          "XF86AudioRaiseVolume" = "exec ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ +5%";
+          "XF86AudioLowerVolume" = "exec ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ -5%";
 
-	"${mod}+r" = "mode \"resize\"";
-	"${mod}+h" = "split h";
-	"${mod}+v" = "split v";
-	"${mod}+f" = "fullscreen toggle";
-	"${mod}+s" = "layout stacking";
-	"${mod}+w" = "layout tabbed";
-	"${mod}+e" = "layout toggle split";
-	"${mod}+Shift+space" = "floating toggle";
-	"${mod}+space" = "focus mode_toggle";
-      };
+          "${mod}+Left" = "focus left";
+          "${mod}+Down" = "focus down";
+          "${mod}+Up" = "focus up";
+          "${mod}+Right" = "focus right";
+
+          "${mod}+Shift+Left" = "move left";
+          "${mod}+Shift+Down" = "move down";
+          "${mod}+Shift+Up" = "move up";
+          "${mod}+Shift+Right" = "move right";
+
+          "${mod}+1" = "workspace ${ws1}";
+          "${mod}+2" = "workspace ${ws2}";
+          "${mod}+3" = "workspace ${ws3}";
+          "${mod}+4" = "workspace ${ws4}";
+          "${mod}+5" = "workspace ${ws5}";
+          "${mod}+6" = "workspace ${ws6}";
+          "${mod}+7" = "workspace ${ws7}";
+          "${mod}+8" = "workspace ${ws8}";
+          "${mod}+9" = "workspace ${ws9}";
+          "${mod}+0" = "workspace ${ws10}";
+
+          "${mod}+Shift+1" = "move container to workspace ${ws1}";
+          "${mod}+Shift+2" = "move container to workspace ${ws2}";
+          "${mod}+Shift+3" = "move container to workspace ${ws3}";
+          "${mod}+Shift+4" = "move container to workspace ${ws4}";
+          "${mod}+Shift+5" = "move container to workspace ${ws5}";
+          "${mod}+Shift+6" = "move container to workspace ${ws6}";
+          "${mod}+Shift+7" = "move container to workspace ${ws7}";
+          "${mod}+Shift+8" = "move container to workspace ${ws8}";
+          "${mod}+Shift+9" = "move container to workspace ${ws9}";
+          "${mod}+Shift+0" = "move container to workspace ${ws10}";
+
+          "${mod}+r" = "mode \"resize\"";
+          "${mod}+h" = "split h";
+          "${mod}+v" = "split v";
+          "${mod}+f" = "fullscreen toggle";
+          "${mod}+s" = "layout stacking";
+          "${mod}+w" = "layout tabbed";
+          "${mod}+e" = "layout toggle split";
+          "${mod}+Shift+space" = "floating toggle";
+          "${mod}+space" = "focus mode_toggle";
+        };
 
       modes.resize = {
         "j" = "resize shrink width 10 px or 10 ppt";
@@ -184,13 +204,34 @@
         "l" = "resize shrink height 10 px or 10 ppt";
         "semicolon" = "resize grow height 10 px or 10 ppt";
         "Left" = "resize shrink width 10 px or 10 ppt";
-        "Down" = "resize grow width 10 px or 10 ppt";
-        "Up" = "resize shrink height 10 px or 10 ppt";
-        "Right" = "resize grow height 10 px or 10 ppt";
+        "Right" = "resize grow width 10 px or 10 ppt";
+        "Down" = "resize shrink height 10 px or 10 ppt";
+        "Up" = "resize grow height 10 px or 10 ppt";
 
-	"Return" = "mode \"default\"";
-	"Escape" = "mode \"default\"";
+        "Return" = "mode \"default\"";
+        "Escape" = "mode \"default\"";
       };
+    };
+  };
+
+  services.betterlockscreen = {
+    enable = true;
+    inactiveInterval = 5;
+    arguments = [ "dim" ];
+  };
+
+  systemd.user.services.betterlockscreen-cache = {
+    Unit = {
+      Description = "Cache betterlockscreen wallpaper";
+      After = [ "graphical-session.target" ];
+    };
+    Service = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.betterlockscreen}/bin/betterlockscreen -u ./assets/wallpapers/sample.jpg";
+      RemainAfterExit = true;
+    };
+    Install = {
+      WantedBy = [ "graphical-session.target" ];
     };
   };
 
@@ -205,164 +246,165 @@
 
     config = {
       "colors" = {
-        background = "#F0282A3E";
-	background-alt = "#F0373B41";
-	foreground = "#C5C8C6";
-        primary = "#F0C674";
-	secondary = "#8ABEB7";
-	alert = "#A54242";
-	disabled = "#707880";
+        background = "#1E1E2E";
+        background-alt = "#313244";
+        foreground = "#CDD6F4";
+        primary = "#F9E2AF";
+        secondary = "#89B4FA";
+        alert = "#F38BA8";
+        disabled = "#7F849C";
       };
 
       "bar/main" = {
         monitor = "\${env:MONITOR:}";
 
-	border-top = 20;
-	border-bottom = 0;
+        border-top = 20;
+        border-bottom = 0;
         border-left = 20;
-	border-right = 20;
+        border-right = 20;
+        border-color = "#00000000";
 
-	height = "42pt";
-	radius = 10;
-	spacing = 1;
-	padding-left = 0;
+        height = "42pt";
+        radius = 10;
+        spacing = 1;
+        padding-left = 0;
         padding-right = 1;
-	module-margin = 1;
-	line-size = "3pt";
-	separator = "|";
-	separator-foreground = "\${colors.disabled}";
+        module-margin = 1;
+        line-size = "3pt";
+        separator = "|";
+        separator-foreground = "\${colors.disabled}";
         cursor-click = "pointer";
         cursor-scroll = "ns-resize";
         enable-ipc = true;
 
-	background = "\${colors.background}";
-	foreground = "\${colors.foreground}";
+        background = "\${colors.background}";
+        foreground = "\${colors.foreground}";
 
-	modules-left = "systray xworkspaces xwindow";
-	modules-right = "pulseaudio backlight xkeyboard filesystem memory cpu wlan battery date";
+        modules-left = "systray xworkspaces xwindow";
+        modules-right = "pulseaudio backlight xkeyboard filesystem memory cpu wlan battery date";
 
-	font-0 = "JetBrainsMono Nerd Font:size=20;2";
+        font-0 = "JetBrainsMono Nerd Font:size=20;4";
       };
 
       "module/systray" = {
         type = "internal/tray";
-	format-margin = "8pt";
-	tray-spacing = "16pt";
+        format-margin = "8pt";
+        tray-spacing = "16pt";
       };
 
       "module/xworkspaces" = {
         type = "internal/xworkspaces";
 
-	label-active = "%name%";
+        label-active = "%name%";
         label-active-background = "\${colors.background-alt}";
-	label-active-underline = "\${colors.primary}";
-	label-active-padding = 1;
-	
-	label-occupied = "%name%";
-	label-occupied-padding = 1;
+        label-active-underline = "\${colors.primary}";
+        label-active-padding = 1;
 
-	label-urgent = "%name%";
-	label-urgent-background = "\${colors.alert}";
-	label-urgent-padding = 1;
+        label-occupied = "%name%";
+        label-occupied-padding = 1;
 
-	label-empty = "%name%";
+        label-urgent = "%name%";
+        label-urgent-background = "\${colors.alert}";
+        label-urgent-padding = 1;
+
+        label-empty = "%name%";
         label-empty-foreground = "\${colors.disabled}";
         label-empty-padding = 1;
       };
 
       "module/xwindow" = {
         type = "internal/xwindow";
-	label = "%title:0:60:...%";
+        label = "%title:0:60:...%";
       };
 
       "module/pulseaudio" = {
         type = "internal/pulseaudio";
-	format-volume-prefix = "VOL ";
-	format-volume-prefix-foreground = "\${colors.primary}";
+        format-volume-prefix = "VOL ";
+        format-volume-prefix-foreground = "\${colors.primary}";
         format-volume = "<label-volume>";
 
-	label-volume = "%percentage%%";
-	label-muted = "muted";
-	label-muted-foreground = "\${colors.disabled}";
+        label-volume = "%percentage%%";
+        label-muted = "muted";
+        label-muted-foreground = "\${colors.disabled}";
       };
 
       "module/backlight" = {
         type = "internal/backlight";
-	card = "nvidia_0";
-	format = "%{F#F0C674}BRI%{F-} <label>";
-	label = "%percentage%%";
+        card = "nvidia_0";
+        format = "%{F#F9E2AF}BRI%{F-} <label>";
+        label = "%percentage%%";
       };
 
       "module/xkeyboard" = {
         type = "internal/xkeyboard";
-	blacklist-0 = "num lock";
+        blacklist-0 = "num lock";
 
-	label-layout = "%layout%";
-	label-layout-foreground = "\${colors.primary}";
-	
-	label-indicator-padding = 2;
-	label-indicator-margin = 1;
-	label-indicator-foreground = "\${colors.background}";
-	label-indicator-background = "\${colors.secondary}";
+        label-layout = "%layout%";
+        label-layout-foreground = "\${colors.primary}";
+
+        label-indicator-padding = 2;
+        label-indicator-margin = 1;
+        label-indicator-foreground = "\${colors.background}";
+        label-indicator-background = "\${colors.secondary}";
       };
 
       "module/filesystem" = {
         type = "internal/fs";
-	interval = 25;
+        interval = 25;
 
-	mount-0 = "/";
-	label-mounted = "%{F#F0C674}%mountpoint%%{F-} %percentage_used%%";
-	label-unmounted = "%mountpoint% not mounted";
-	label-unmounted-forground = "\${colors.disabled}";
+        mount-0 = "/";
+        label-mounted = "%{F#F9E2AF}%mountpoint%%{F-} %percentage_used%%";
+        label-unmounted = "%mountpoint% not mounted";
+        label-unmounted-forground = "\${colors.disabled}";
       };
 
       "module/memory" = {
         type = "internal/memory";
-	interval = 2;
-	format-prefix = "RAM ";
-	format-prefix-foreground = "\${colors.primary}";
+        interval = 2;
+        format-prefix = "RAM ";
+        format-prefix-foreground = "\${colors.primary}";
         label = "%percentage_used:2%%";
       };
 
       "module/cpu" = {
         type = "internal/cpu";
-	interval = 2;
-	format-prefix = "CPU ";
-	format-prefix-foreground = "\${colors.primary}";
-	label = "%percentage:2%%";
+        interval = 2;
+        format-prefix = "CPU ";
+        format-prefix-foreground = "\${colors.primary}";
+        label = "%percentage:2%%";
       };
 
       "module/battery" = {
         type = "internal/battery";
-	battery = "BAT0";
-	adapter = "AAC";
-	full-at = 98;
-	format-charging = "<label-charging>";
-	format-discharging = "<label-discharging>";
+        battery = "BAT0";
+        adapter = "AAC";
+        full-at = 98;
+        format-charging = "<label-charging>";
+        format-discharging = "<label-discharging>";
       };
 
       "module/wlan" = {
         type = "internal/network";
-	interval = 2;
-	interface-type = "wireless";
-	format-connected = "<label-connected>";
-	format-disconnected = "<label-disconnected>";
-	label-connected = "%{F#F0C674}%ifname%%{F-} %essid% %local_ip%";
-	label-disconnected = "%{F#F0C674}%ifname%%{F#707880} disconnected";
+        interval = 2;
+        interface-type = "wireless";
+        format-connected = "<label-connected>";
+        format-disconnected = "<label-disconnected>";
+        label-connected = "%{F#F9E2AF}%ifname%%{F-} %essid% %local_ip%";
+        label-disconnected = "%{F#F9E2AF}%ifname%%{F#7F849C} disconnected";
       };
 
       "module/date" = {
         type = "internal/date";
-	interval = 1;
-	date = "%H:%M";
-	date-alt = "%Y-%m-%d %H:%M:%S";
-	label = "%date%";
-	lavel-foreground = "\${colors.primary}";
+        interval = 1;
+        date = "%H:%M";
+        date-alt = "%Y-%m-%d %H:%M:%S";
+        label = "%date%";
+        lavel-foreground = "\${colors.primary}";
       };
 
       "settings" = {
         screenchange-reload = true;
-	psuedo-transparency = true;
+        psuedo-transparency = true;
       };
     };
   };
@@ -376,12 +418,21 @@
       corner-radius = 16;
       rounded-corners-exclude = [
         "window_type = 'dock'"
-	"window_type = 'desktop'"
+        "window_type = 'desktop'"
       ];
 
       shadow = true;
       shadow-radius = 16;
       shadow-opacity = 0.2;
+      shadow-exclude = [
+        "class_g = 'Polybar'"
+        "class_g = 'Rofi'"
+      ];
+
+      opacity-rule = [
+        "95:class_g = 'Polybar'"
+        "95:class_g = 'Rofi'"
+      ];
     };
   };
 
@@ -391,7 +442,7 @@
 
   programs.kitty = {
     enable = true;
-    
+
     settings = {
       font_family = "JetBrainsMono Nerd Font";
       font_size = "12.0";
@@ -434,27 +485,107 @@
     extras = {
       lang = {
         nix.enable = true;
-	haskell = {
-	  enable = true;
-	  installDependencies = true;
-	  installRuntimeDependencies = true;
-	};
-	rust = {
-	  enable = true;
-	  installDependencies = true;
-	  installRuntimeDependencies = true;
-	};
-	python = {
-	  enable = true;
-	  installDependencies = true;
-	  installRuntimeDependencies = true;
-	};
       };
     };
 
     extraPackages = with pkgs; [
       nixd
+      statix
+      nil
       alejandra
     ];
+  };
+  
+  programs.rofi = let 
+    colors = {
+      bg = "#1E1E2E";
+      fg = "#CDD6F4";
+      accent = "#F9E2AF";
+      surface = "#313244";
+    };
+  in {
+    enable = true;
+    package = pkgs.rofi;
+    theme = let
+      inherit (config.lib.formats.rasi) mkLiteral;
+    in {
+      "*" = {
+        background-color = mkLiteral "transparent";
+        text-color = mkLiteral colors.fg;
+        font = "JetBrainsMono Nerd Font 20";
+        margin = 0;
+        padding = 0;
+        spacing = 0;
+      };
+
+      "window" = {
+        location = mkLiteral "north";
+        width = mkLiteral "100%";
+        height = mkLiteral "76px";
+        margin = mkLiteral "20px 20px 0px 20px";
+        background-color = mkLiteral colors.bg;
+        border = mkLiteral "0px";
+        border-radius = mkLiteral "10px";
+        children = mkLiteral "[ mainbox ]";
+      };
+
+      "mainbox" = {
+        orientation = mkLiteral "horizontal";
+        children = mkLiteral "[ prompt, entry, listview ]";
+      };
+
+      "prompt" = {
+        background-color = mkLiteral colors.accent;
+        text-color = mkLiteral colors.bg;
+        margin = mkLiteral "0px 7px 0px 0px";
+        padding = mkLiteral "5px 5px";
+        border-radius = mkLiteral "6px";
+        vertical-align = mkLiteral "0.5";
+      };
+
+      "entry" = {
+        placeholder = "Search...";
+        width = mkLiteral "15%";
+        padding = mkLiteral "0px 5px";
+        vertical-align = mkLiteral "0.5";
+        expand = false;
+      };
+
+      "listview" = {
+        layout = mkLiteral "horizontal";
+        spacing = mkLiteral "7px";
+        padding = mkLiteral "5px";
+        border = mkLiteral "0px";
+        vertical-align = mkLiteral "0.5";
+        lines = 100;
+        fixed-height = true;
+      };
+
+      "element" = {
+        padding = mkLiteral "0px 5px";
+        vertical-align = mkLiteral "0.5";
+        background-color = mkLiteral "transparent";
+      };
+
+      "element-text" = {
+        text-color = mkLiteral "inherit";
+      };
+
+      "element selected" = {
+        background-color = mkLiteral colors.accent;
+        text-color = mkLiteral colors.bg;
+        border-radius = mkLiteral "6px";
+      };
+    };
+  };
+
+  programs.vscode = {
+    enable = true;
+    userSettings = {
+      "editor.fontFamily" = "'JetBrainsMono Nerd Font', 'monospace', monospace";
+      "editor.fontLigatures" = true;
+      "editor.fontSize" = 14;
+      "terminal.integrated.fontFamily" = "JetBrainsMono Nerd Font";
+    };
   };
 }
