@@ -223,22 +223,19 @@
     librewolf
     firefox
 
-    # text editing
+    # programming
     neovim
+
+    # programming langs/related
     (pkgs.texlive.combine {
       inherit (pkgs.texlive) scheme-medium;
     })
-    (pkgs.vscode-with-extensions.override {
-      vscode = pkgs.vscodium;
-      vscodeExtensions = with pkgs.vscode-extensions; [
-        jnoortheen.nix-ide
-        ms-python.python
-        james-yu.latex-workshop
-        vscodevim.vim
-        catppuccin.catppuccin-vsc
-        catppuccin.catppuccin-vsc-icons
-      ];
-    })
+    (python3.withPackages (python-pkgs: with python-pkgs; [
+      pandas
+      requests
+    ]))
+    typst
+    typstyle
 
     # screen
     maim

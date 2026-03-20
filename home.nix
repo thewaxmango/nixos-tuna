@@ -514,9 +514,9 @@
     enable = true;
     flavor = "mocha";
     accent = "lavender";
-    vscode.profiles.default.enable = true;
     fcitx5.enable = true;
     fcitx5.apply = true;
+    # vscode.profiles.default.enable = false;
   };
 
   programs.kitty = {
@@ -687,14 +687,22 @@
   };
 
   programs.vscode = {
+    enable = true;
     package = pkgs.vscodium;
     profiles.default = {
-      enable = true;
+      extensions = with pkgs.vscode-extensions; [
+        jnoortheen.nix-ide
+        ms-python.python
+        james-yu.latex-workshop
+        vscodevim.vim
+        myriad-dreamin.tinymist
+      ];
       userSettings = {
         "editor.fontFamily" = "'JetBrainsMono Nerd Font', 'monospace', monospace";
         "editor.fontLigatures" = true;
         "editor.fontSize" = 14;
         "terminal.integrated.fontFamily" = "JetBrainsMono Nerd Font";
+
         "vim.useSystemClipboard" = true;
         "vim.hlsearch" = true;
         "vim.easymotion" = true;
@@ -702,9 +710,20 @@
         "vim.cursorStylePerMode.insert" = "line";
         "vim.cursorStylePerMode.normal" = "block";
         "vim.leader" = "<space>";
+
         "workbench.colorTheme" = "Catppuccin Mocha";
         "workbench.iconTheme" = "catppuccin-mocha";
         "catppuccin.accentColor" = "lavender";
+
+        "tinymist.formatterMode" = "typstyle";
+        "[typst]" = {
+          "editor.defaultFormatter" = "myriad-dreamin.tinymist";
+          "editor.formatOnSave" = true;
+        };
+
+        "latex-workshop.latex.outDir" = "%DIR%/.temp";
+        "latex-workshop.latex.clean.subFolder.enabled" = true;
+        "latex-workshop.view.pdf.viewer" = "tab";
       };
     };
   };
