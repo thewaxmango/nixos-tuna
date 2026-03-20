@@ -29,8 +29,8 @@
 			            backupFileExtension = "backup";  
                     };
                 }
-		    catppuccin.nixosModules.catppuccin
-	    ];
+                catppuccin.nixosModules.catppuccin
+            ];
         };  
     };
 }

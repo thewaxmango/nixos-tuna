@@ -18,10 +18,6 @@
     size = 44;
   };
 
-  home.packages = with pkgs; [
-    feh
-  ];
-
   home.sessionVariables = {
     GTK_THEME = "catppuccin-mocha-lavender-standard";
     QT_AUTO_SCREEN_SCALE_FACTOR = "0";

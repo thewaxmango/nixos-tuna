@@ -66,6 +66,16 @@
     alsa.support32Bit = true;
     # pulse.enable = true;
     # jack.enable = true;
+
+    extraConfig.pipewire."92-low-latency" = {
+      "context.properties" = {
+        "default.clock.rate" = 48000;
+        "default.clock.quantum" = 32;
+        "default.clock.min-quantum" = 32;
+        "default.clock.max-quantum" = 32;
+      };
+    };
+
     wireplumber.extraConfig."10-no-ucm" = {
       "monitor.alsa.properties" = {
         "alsa.use-ucm" = false;
@@ -164,6 +174,7 @@
     thunar
     thunar-volman
     ntfs3g
+    unzip
 
     # browser
     librewolf
@@ -190,6 +201,7 @@
     # qol
     rofi
     xclip
+    feh
 
     # git!
     git
@@ -201,6 +213,9 @@
     # audio
     pavucontrol
     qpwgraph
+
+    # game
+    osu-lazer-bin
   ];
 
   fonts = {
