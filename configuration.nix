@@ -9,6 +9,13 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.supportedFilesystems = [ "ntfs" ];
+  # boot.extraModprobeConfig = ''
+  #   options snd_intel_dspcfg dsp_driver=1
+  # '';
+  boot.kernelParams = [ 
+    "snd_intel_dspcfg.dsp_driver=3" 
+    "snd_hda_intel.dmic_detect=1" 
+    ];
 
   networking.hostName = "tuna";
   networking.networkmanager.enable = true;
@@ -53,9 +60,17 @@
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
+    audio.enable = true;
+    wireplumber.enable = true;
     alsa.enable = true;
     alsa.support32Bit = true;
-    pulse.enable = true;
+    # pulse.enable = true;
+    # jack.enable = true;
+    wireplumber.extraConfig."10-no-ucm" = {
+      "monitor.alsa.properties" = {
+        "alsa.use-ucm" = false;
+      };
+    };
   };
 
   services.openssh.enable = true;
@@ -93,6 +108,7 @@
 
   programs.i3lock.enable = true;
   programs.fish.enable = true;
+  programs.noisetorch.enable = true;
 
   services.displayManager = {
     defaultSession = "none+i3";
@@ -105,7 +121,7 @@
   users.users.twm = {
     isNormalUser = true;
     description = "twm";
-    extraGroups = [ "networkmanager" "wheel" "video" ];
+    extraGroups = [ "networkmanager" "wheel" "video" "audio" ];
     packages = with pkgs; [];
 
     shell = pkgs.fish;
@@ -130,23 +146,31 @@
     };
   };
 
+  hardware.firmware = [ pkgs.sof-firmware ];
+  hardware.enableRedistributableFirmware = true;
+
   environment.systemPackages = with pkgs; [
-    neovim
+    # terminal utils
     wget
     lshw
     pciutils
-    git
     tree
     fzf
-    yazi
-    librewolf
-    firefox
     fish
     kitty
-    brightnessctl
+
+    # files
+    yazi
     thunar
     thunar-volman
     ntfs3g
+
+    # browser
+    librewolf
+    firefox
+    
+    # text editing
+    neovim
     (pkgs.vscode-with-extensions.override {
       vscode = pkgs.vscodium;
       vscodeExtensions = with pkgs.vscode-extensions; [
@@ -159,10 +183,24 @@
     (pkgs.texlive.combine {
       inherit (pkgs.texlive) scheme-medium;
     })
-    rofi
+
+    # screen
     maim
-    scrot
+
+    # qol
+    rofi
     xclip
+
+    # git!
+    git
+
+    # display
+    brightnessctl
+    # autorandr
+
+    # audio
+    pavucontrol
+    qpwgraph
   ];
 
   fonts = {

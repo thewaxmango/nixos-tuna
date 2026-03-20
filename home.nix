@@ -117,7 +117,9 @@
                   --output ${laptop} --primary --mode ${laptopRes} --rate ${laptopHz} \
                   --output ${external} --off
               fi
+              
               ${pkgs.feh}/bin/feh --bg-fill ${./assets/wallpapers}/sample.jpg
+              betterlockscreen -u .nixos/assets/wallpapers/sample.jpg
             ''}
           '';
           always = true;
@@ -134,6 +136,11 @@
         }
         {
           command = "${pkgs.xss-lock}/bin/xss-lock -- betterlockscreen -l dim";
+          always = true;
+          notification = false;
+        }
+        {
+          command = "${pkgs.xautolock}/bin/xautolock -time 5 -locker 'betterlockscreen -l dim' -killer 'systemctl suspend' -killtime 10";
           always = true;
           notification = false;
         }
@@ -171,9 +178,12 @@
           "${mod}+Return" = "exec ${pkgs.kitty}/bin/kitty";
           "${mod}+Shift+c" = "reload";
           "${mod}+Shift+r" = "restart";
+          "${mod}+q" = "kill";
+          
           "${mod}+d" = "exec rofi -show run";    
           "${mod}+b" = "exec librewolf";
-          "${mod}+q" = "kill";
+          "${mod}+c" = "exec codium";
+          
 
           "${mod}+l" = "exec --no-startup-id betterlockscreen -l dim";
           "${mod}+Shift+l" = "exec i3-msg exit";
@@ -237,7 +247,6 @@
           "${mod}+Shift+space" = "floating toggle";
           "${mod}+space" = "focus mode_toggle";
           "${mod}+a" = "focus parent";
-          
 
           "${mod}+Shift+s" = ''exec ${pkgs.writeShellScript "clipSelection" ''
             exec ${pkgs.maim}/bin/maim -s -c 0.8,0.6,1,0.5 \
@@ -450,8 +459,10 @@
         interface-type = "wireless";
         format-connected = "<label-connected>";
         format-disconnected = "<label-disconnected>";
-        label-connected = "%{F#F9E2AF}%ifname%%{F-} %essid% %local_ip%";
-        label-disconnected = "%{F#F9E2AF}%ifname%%{F#7F849C} disconnected";
+        label-connected = "%essid%";
+        label-disconnected = "disconnected";
+        # label-connected = "%{F#F9E2AF}%ifname%%{F-} %essid% %local_ip%";
+        # label-disconnected = "%{F#F9E2AF}%ifname%%{F#7F849C} disconnected";
       };
 
       "module/date" = {
@@ -500,6 +511,14 @@
   catppuccin.enable = true;
   catppuccin.flavor = "mocha";
   catppuccin.accent = "lavender";
+
+  # programs.autorandr = {
+  #   enable = true;
+  #   hooks.postswitch = {
+  #     "update-wallpaper" = "${pkgs.feh}/bin/feh --bg-fill ${./assets/wallpapers}/sample.jpg";
+  #     "update-lockscreen" = "betterlockscreen -u /home/user/wallpapers/current.png";
+  #   };
+  # };
 
   programs.kitty = {
     enable = true;
