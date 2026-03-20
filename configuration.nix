@@ -176,6 +176,7 @@
     thunar
     thunar-volman
     ntfs3g
+    zip
     unzip
 
     # browser

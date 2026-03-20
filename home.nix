@@ -178,8 +178,8 @@
           
           "${mod}+d" = "exec rofi -show run";    
           "${mod}+b" = "exec librewolf";
+          "${mod}+g" = "exec thunar";
           "${mod}+c" = "exec codium";
-          
 
           "${mod}+l" = "exec --no-startup-id betterlockscreen -l dim";
           "${mod}+Shift+l" = "exec i3-msg exit";
