@@ -122,6 +122,11 @@
           notification = false;
         }
         {
+          command = "fcitx5 -d";
+          always = true;
+          notification = false;
+        }
+        {
           command = "systemctl --user restart polybar";
           always = true;
           notification = false;
@@ -348,7 +353,7 @@
         foreground = "\${colors.foreground}";
 
         modules-left = "systray xworkspaces xwindow";
-        modules-right = "pulseaudio backlight xkeyboard filesystem memory cpu wlan battery date";
+        modules-right = "pulseaudio backlight filesystem memory cpu wlan battery date";
 
         font-0 = "JetBrainsMono Nerd Font:size=20;4";
       };
@@ -505,9 +510,14 @@
     };
   };
 
-  catppuccin.enable = true;
-  catppuccin.flavor = "mocha";
-  catppuccin.accent = "lavender";
+  catppuccin = {
+    enable = true;
+    flavor = "mocha";
+    accent = "lavender";
+    vscode.profiles.default.enable = true;
+    fcitx5.enable = true;
+    fcitx5.apply = true;
+  };
 
   programs.kitty = {
     enable = true;
@@ -603,13 +613,13 @@
   in {
     enable = true;
     package = pkgs.rofi;
+    font = "JetBrainsMono Nerd Font 20";
     theme = let
       inherit (config.lib.formats.rasi) mkLiteral;
     in {
       "*" = {
         background-color = mkLiteral "transparent";
         text-color = mkLiteral colors.fg;
-        font = "JetBrainsMono Nerd Font 20";
         margin = 0;
         padding = 0;
         spacing = 0;
@@ -677,21 +687,25 @@
   };
 
   programs.vscode = {
-    enable = true;
-    profiles.default.userSettings = {
-      "editor.fontFamily" = "'JetBrainsMono Nerd Font', 'monospace', monospace";
-      "editor.fontLigatures" = true;
-      "editor.fontSize" = 14;
-      "terminal.integrated.fontFamily" = "JetBrainsMono Nerd Font";
-      "vim.useSystemClipboard" = true;
-      "vim.hlsearch" = true;
-      "vim.easymotion" = true;
-      "vim.incsearch" = true;
-      
-      "vim.cursorStylePerMode.insert" = "line";
-      "vim.cursorStylePerMode.normal" = "block";
-      
-      "vim.leader" = "<space>";
+    package = pkgs.vscodium;
+    profiles.default = {
+      enable = true;
+      userSettings = {
+        "editor.fontFamily" = "'JetBrainsMono Nerd Font', 'monospace', monospace";
+        "editor.fontLigatures" = true;
+        "editor.fontSize" = 14;
+        "terminal.integrated.fontFamily" = "JetBrainsMono Nerd Font";
+        "vim.useSystemClipboard" = true;
+        "vim.hlsearch" = true;
+        "vim.easymotion" = true;
+        "vim.incsearch" = true;
+        "vim.cursorStylePerMode.insert" = "line";
+        "vim.cursorStylePerMode.normal" = "block";
+        "vim.leader" = "<space>";
+        "workbench.colorTheme" = "Catppuccin Mocha";
+        "workbench.iconTheme" = "catppuccin-mocha";
+        "catppuccin.accentColor" = "lavender";
+      };
     };
   };
 }
