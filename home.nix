@@ -536,20 +536,48 @@
   };
 
   programs.git = {
-    enable = true;
     package = pkgs.git;
+    enable = true;
+    lfs.enable = true;
+
+    signing = {
+      key = "658DA341744E3719";
+      format = "openpgp";
+      signByDefault = true;
+    };
+
     settings = {
       user.name = "thewaxmango";
       user.email = "thewaxmango@gmail.com";
+      github.user = "thewaxmango";
+
       init.defaultBranch = "main";
       pull.rebase = true;
-      credential.helper = "store";
+
       alias = {
-        st = "status";
+        s = "status";
+        d = "diff";
         co = "checkout";
-        ci = "commit";
-        rb = "rebase";
+        c = "commit";
+        r = "rebase";
+        p = "push";
+        l = "log";
         ll = "log --oneline --graph --decorate";
+      };
+
+      url = {
+        "git@github.com:" = {
+          insteadOf = [
+            "gh:"
+            "github:"
+          ];
+        };
+        "https://gitlab.com/" = {
+          insteadOf = [
+            "gl:"
+            "gitlab:"
+          ];
+        };
       };
     };
   };

@@ -67,15 +67,6 @@
     # pulse.enable = true;
     # jack.enable = true;
 
-    extraConfig.pipewire."92-low-latency" = {
-      "context.properties" = {
-        "default.clock.rate" = 48000;
-        "default.clock.quantum" = 32;
-        "default.clock.min-quantum" = 32;
-        "default.clock.max-quantum" = 32;
-      };
-    };
-
     wireplumber.extraConfig."10-no-ucm" = {
       "monitor.alsa.properties" = {
         "alsa.use-ucm" = false;
@@ -83,8 +74,15 @@
     };
   };
 
-  services.openssh.enable = true;
-  programs.ssh.startAgent = true;
+  # services.openssh.enable = true;
+  # programs.ssh.startAgent = true;
+
+  services.pcscd.enable = true;
+  programs.gnupg.agent = {
+    enable = true;
+    pinentryPackage = with pkgs; pinentry-curses;
+    enableSSHSupport = true;
+  };
 
   services.xserver = {
     enable = true;
@@ -169,6 +167,10 @@
     fish
     kitty
 
+    # auth
+    gnupg
+    pinentry-curses
+
     # files
     yazi
     thunar
@@ -203,7 +205,7 @@
     xclip
     feh
 
-    # git!
+    # git
     git
 
     # display
@@ -213,9 +215,6 @@
     # audio
     pavucontrol
     qpwgraph
-
-    # game
-    osu-lazer-bin
   ];
 
   fonts = {
