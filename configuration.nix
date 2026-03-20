@@ -216,6 +216,12 @@
     # audio
     pavucontrol
     qpwgraph
+
+    # real life
+    obsidian
+
+    # game
+    osu-lazer-bin
   ];
 
   fonts = {

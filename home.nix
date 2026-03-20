@@ -114,8 +114,8 @@
                   --output ${external} --off
               fi
               
-              ${pkgs.feh}/bin/feh --bg-fill ${./assets/wallpapers}/sample.jpg
-              betterlockscreen -u .nixos/assets/wallpapers/sample.jpg
+              ${pkgs.feh}/bin/feh --bg-fill ${config.home.homeDirectory}/nixos-tuna/assets/wallpapers/sample2.jpg
+              betterlockscreen -u ${config.home.homeDirectory}/nixos-tuna/assets/wallpapers/sample2.jpg
             ''}
           '';
           always = true;
@@ -128,6 +128,7 @@
         }
         {
           command = "xset s 300 600";
+          always = true;
           notification = false;
         }
         {
@@ -288,7 +289,7 @@
     };
     Service = {
       Type = "oneshot";
-      ExecStart = "${pkgs.betterlockscreen}/bin/betterlockscreen -u ${./assets/wallpapers}/sample.jpg";
+      ExecStart = "${pkgs.betterlockscreen}/bin/betterlockscreen -u ${config.home.homeDirectory}/nixos-tuna/assets/wallpapers/sample2.jpg";
       RemainAfterExit = true;
     };
     Install = {
@@ -507,14 +508,6 @@
   catppuccin.enable = true;
   catppuccin.flavor = "mocha";
   catppuccin.accent = "lavender";
-
-  # programs.autorandr = {
-  #   enable = true;
-  #   hooks.postswitch = {
-  #     "update-wallpaper" = "${pkgs.feh}/bin/feh --bg-fill ${./assets/wallpapers}/sample.jpg";
-  #     "update-lockscreen" = "betterlockscreen -u /home/user/wallpapers/current.png";
-  #   };
-  # };
 
   programs.kitty = {
     enable = true;
