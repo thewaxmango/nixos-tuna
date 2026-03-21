@@ -228,7 +228,8 @@
 
     # programming langs/related
     (pkgs.texlive.combine {
-      inherit (pkgs.texlive) scheme-medium;
+      inherit (pkgs.texlive) 
+        scheme-full;
     })
     (python3.withPackages (python-pkgs: with python-pkgs; [
       pandas

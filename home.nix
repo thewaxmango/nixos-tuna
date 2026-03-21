@@ -178,14 +178,15 @@
         in
         {
           "${mod}+Return" = "exec ${pkgs.kitty}/bin/kitty";
-          "${mod}+Shift+c" = "reload";
+          "${mod}+Shift+t" = "reload";
           "${mod}+Shift+r" = "restart";
           "${mod}+q" = "kill";
           
           "${mod}+d" = "exec rofi -show run";    
-          "${mod}+b" = "exec librewolf";
+          "${mod}+b" = "exec firefox";
           "${mod}+g" = "exec thunar";
           "${mod}+c" = "exec codium";
+          "${mod}+Shift+c" = "exec codium ${config.home.homeDirectory}/nixos-tuna";
 
           "${mod}+l" = "exec --no-startup-id betterlockscreen -l dim";
           "${mod}+Shift+l" = "exec i3-msg exit";
