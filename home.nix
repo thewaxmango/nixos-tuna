@@ -105,9 +105,15 @@
           command = ''
             ${pkgs.writeShellScript "monitor-setup" ''
               if ${pkgs.xrandr}/bin/xrandr | ${pkgs.gnugrep}/bin/grep "${external} connected"; then
-                ${pkgs.xrandr}/bin/xrandr \
-                  --output ${laptop} --primary --mode ${laptopRes} --rate ${laptopHz} \
-                  --output ${external} --mode ${externalRes} --rate ${externalHz} --right-of ${laptop} --scale 1.5x1.5
+                if ${pkgs.gnugrep}/bin/grep -q "closed" /proc/acpi/button/lid/LID0/state; then
+                  ${pkgs.xrandr}/bin/xrandr \
+                    --output ${laptop} --off \
+                    --output ${external} --primary --mode ${externalRes} --rate ${externalHz} --scale 1.5x1.5
+                else
+                  ${pkgs.xrandr}/bin/xrandr \
+                    --output ${laptop} --primary --mode ${laptopRes} --rate ${laptopHz} \
+                    --output ${external} --mode ${externalRes} --rate ${externalHz} --right-of ${laptop} --scale 1.5x1.5
+                fi
               else
                 ${pkgs.xrandr}/bin/xrandr \
                   --output ${laptop} --primary --mode ${laptopRes} --rate ${laptopHz} \
@@ -115,7 +121,7 @@
               fi
               
               ${pkgs.feh}/bin/feh --bg-fill ${config.home.homeDirectory}/nixos-tuna/assets/wallpapers/sample2.jpg
-              betterlockscreen -u ${config.home.homeDirectory}/nixos-tuna/assets/wallpapers/sample2.jpg
+              ${pkgs.betterlockscreen}/bin/betterlockscreen -u ${config.home.homeDirectory}/nixos-tuna/assets/wallpapers/sample2.jpg
             ''}
           '';
           always = true;
@@ -190,8 +196,9 @@
 
           "${mod}+l" = "exec --no-startup-id betterlockscreen -l dim";
           "${mod}+Shift+l" = "exec i3-msg exit";
-          "${mod}+Escape" = "exec --no-startup-id systemctl reboot";
-          "${mod}+Shift+Escape" = "exec --no-startup-id systemctl poweroff";
+          "${mod}+Escape" = "exec --no-startup-id systemctl suspend";
+          "${mod}+Shift+Escape" = "exec --no-startup-id systemctl reboot";
+          "${mod}+Control+Escape" = "exec --no-startup-id systemctl poweroff";
 
           "${mod}+F5" = "exec ${pkgs.brightnessctl}/bin/brightnessctl set 5%-";
           "${mod}+F6" = "exec ${pkgs.brightnessctl}/bin/brightnessctl set 5%+";
@@ -252,7 +259,7 @@
           "${mod}+a" = "focus parent";
 
           "${mod}+Shift+s" = ''exec ${pkgs.writeShellScript "clipSelection" ''
-            exec ${pkgs.maim}/bin/maim -s -c 0.8,0.6,1,0.5 \
+            ${pkgs.maim}/bin/maim -s -c 0.8,0.6,1,0.5 \
               | ${pkgs.xclip}/bin/xclip -selection clipboard -t image/png
           ''}'';
           "Print" = ''exec ${pkgs.writeShellScript "printEntireScreen" 
@@ -700,7 +707,7 @@
       ];
       userSettings = {
         "editor.fontFamily" = "'JetBrainsMono Nerd Font', 'monospace', monospace";
-        "editor.fontLigatures" = true;
+        "editor.fontLigatures" = false;
         "editor.fontSize" = 14;
         "terminal.integrated.fontFamily" = "JetBrainsMono Nerd Font";
 
