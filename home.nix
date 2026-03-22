@@ -147,11 +147,11 @@
           always = true;
           notification = false;
         }
-        {
-          command = "${pkgs.xautolock}/bin/xautolock -time 5 -locker 'betterlockscreen -l dim' -killer 'systemctl suspend' -killtime 10";
-          always = true;
-          notification = false;
-        }
+        # {
+        #   command = "${pkgs.xautolock}/bin/xautolock -time 5 -locker 'betterlockscreen -l dim' -killer 'systemctl suspend' -killtime 10";
+        #   always = true;
+        #   notification = false;
+        # }
       ];
 
       workspaceAutoBackAndForth = true;
@@ -196,7 +196,7 @@
 
           "${mod}+l" = "exec --no-startup-id betterlockscreen -l dim";
           "${mod}+Shift+l" = "exec i3-msg exit";
-          "${mod}+Escape" = "exec --no-startup-id systemctl suspend";
+          "${mod}+Escape" = "exec --no-startup-id betterlockscreen -l dim && systemctl suspend";
           "${mod}+Shift+Escape" = "exec --no-startup-id systemctl reboot";
           "${mod}+Control+Escape" = "exec --no-startup-id systemctl poweroff";
 
@@ -291,7 +291,7 @@
 
   services.betterlockscreen = {
     enable = true;
-    inactiveInterval = 5;
+    inactiveInterval = 15;
     arguments = [ "dim" ];
   };
 
@@ -701,23 +701,28 @@
       extensions = with pkgs.vscode-extensions; [
         jnoortheen.nix-ide
         ms-python.python
+        ms-python.debugpy
+        ms-pyright.pyright
         james-yu.latex-workshop
-        vscodevim.vim
+        # vscodevim.vim
         myriad-dreamin.tinymist
       ];
       userSettings = {
         "editor.fontFamily" = "'JetBrainsMono Nerd Font', 'monospace', monospace";
         "editor.fontLigatures" = false;
         "editor.fontSize" = 14;
+        "editor.minimap.enabled" = false;
         "terminal.integrated.fontFamily" = "JetBrainsMono Nerd Font";
 
-        "vim.useSystemClipboard" = true;
-        "vim.hlsearch" = true;
-        "vim.easymotion" = true;
-        "vim.incsearch" = true;
-        "vim.cursorStylePerMode.insert" = "line";
-        "vim.cursorStylePerMode.normal" = "block";
-        "vim.leader" = "<space>";
+        "python.analysis.typeCheckingMode" = "strict";
+
+        # "vim.useSystemClipboard" = true;
+        # "vim.hlsearch" = true;
+        # "vim.easymotion" = true;
+        # "vim.incsearch" = true;
+        # "vim.cursorStylePerMode.insert" = "line";
+        # "vim.cursorStylePerMode.normal" = "block";
+        # "vim.leader" = "<space>";
 
         "workbench.colorTheme" = "Catppuccin Mocha";
         "workbench.iconTheme" = "catppuccin-mocha";

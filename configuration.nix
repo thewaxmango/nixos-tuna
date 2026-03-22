@@ -69,6 +69,8 @@
         HandleLidSwitch = "ignore";
         HandleLidSwitchDocked = "ignore";
         LidSwitchIgnoreInhibited = "no";
+        IdleAction = "suspend";
+        IdleActionSec = "10min";
       };
     };
   };
@@ -235,6 +237,7 @@
     (python3.withPackages (python-pkgs: with python-pkgs; [
       pandas
       requests
+      virtualenv
     ]))
     typst
     typstyle
