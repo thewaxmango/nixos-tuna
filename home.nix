@@ -196,7 +196,7 @@
 
           "${mod}+l" = "exec --no-startup-id betterlockscreen -l dim";
           "${mod}+Shift+l" = "exec i3-msg exit";
-          "${mod}+Escape" = "exec --no-startup-id betterlockscreen -l dim && systemctl suspend";
+          "${mod}+Escape" = "exec --no-startup-id betterlockscreen --suspend dim";
           "${mod}+Shift+Escape" = "exec --no-startup-id systemctl reboot";
           "${mod}+Control+Escape" = "exec --no-startup-id systemctl poweroff";
 

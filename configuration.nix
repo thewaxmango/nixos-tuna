@@ -9,6 +9,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.supportedFilesystems = [ "ntfs" ];
+  boot.kernelModules = [ "uinput" ];
   boot.kernelParams = [
     "snd_intel_dspcfg.dsp_driver=3"
     "snd_hda_intel.dmic_detect=1"
@@ -198,6 +199,9 @@
 
   hardware.firmware = [ pkgs.sof-firmware ];
   hardware.enableRedistributableFirmware = true;
+
+  hardware.opentabletdriver.enable = true;
+  hardware.uinput.enable = true;
 
   # packages
   environment.systemPackages = with pkgs; [
