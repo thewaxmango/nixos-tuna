@@ -18,6 +18,7 @@
   # network
   networking.hostName = "tuna";
   networking.networkmanager.enable = true;
+  security.pki.certificates = [];
 
   # time and date
   time.timeZone = "America/New_York";
@@ -217,6 +218,7 @@
     # auth
     gnupg
     pinentry-curses
+    cacert
 
     # files
     yazi
@@ -245,6 +247,14 @@
     ]))
     typst
     typstyle
+    tinymist
+    dafny
+    dotnet-sdk
+    z3
+    haskell-language-server
+    stack
+    ghc
+    cabal-install
 
     # screen
     maim
@@ -270,6 +280,18 @@
 
     # game
     osu-lazer-bin
+    (prismlauncher.override {
+    # Add binary required by some mod
+    additionalPrograms = [ ffmpeg ];
+
+    # Change Java runtimes available to Prism Launcher
+    jdks = [
+      graalvmPackages.graalvm-ce
+      zulu8
+      zulu17
+      zulu
+    ];
+  })
   ];
 
   # fish lol

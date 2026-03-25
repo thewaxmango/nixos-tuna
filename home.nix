@@ -395,6 +395,7 @@
       "module/xwindow" = {
         type = "internal/xwindow";
         label = "%title:0:60:...%";
+        label-maxlen = 42;
       };
 
       "module/pulseaudio" = {
@@ -706,6 +707,9 @@
         james-yu.latex-workshop
         # vscodevim.vim
         myriad-dreamin.tinymist
+        # dafny-lang.ide-vscode
+        haskell.haskell
+        justusadam.language-haskell
       ];
       userSettings = {
         "editor.fontFamily" = "'JetBrainsMono Nerd Font', 'monospace', monospace";
@@ -737,6 +741,8 @@
         "latex-workshop.latex.outDir" = "%DIR%/.temp";
         "latex-workshop.latex.clean.subFolder.enabled" = true;
         "latex-workshop.view.pdf.viewer" = "tab";
+
+        "dafny.dafnyPath" = "/run/current-system/sw/bin/dafny";
       };
     };
   };
